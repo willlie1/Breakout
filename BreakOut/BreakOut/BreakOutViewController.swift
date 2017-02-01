@@ -85,12 +85,7 @@ class BreakOutViewController: UIViewController, UIDynamicAnimatorDelegate, UICol
     override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         
         resetGame()
-        // explanation: When the screen rotates, the ball might fall of the screen. To prevent weird behaviour the game will simply restart
-        
-        
-        // Reload Data here
-        
-        // Incorrect
+
         
     }
     
@@ -174,6 +169,10 @@ class BreakOutViewController: UIViewController, UIDynamicAnimatorDelegate, UICol
     private func gameOver(win: Bool){
         if gameStarted {
             clearGameView()
+            if pauseView != nil {
+                pauseView?.removeFromSuperview()
+                pauseView = nil
+            }
             pauseView = UIView(frame: gameView.frame)
             gameView.addSubview(pauseView!)
             
@@ -453,16 +452,14 @@ class BreakOutViewController: UIViewController, UIDynamicAnimatorDelegate, UICol
                     breakOutBehavior.removeBarrier(named: collisionIdentifier)
                     UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
                         block.frame = CGRect(x: block.frame.midX, y: block.frame.midY, width: 1, height: 1)
-                    }, completion: { (completion) in
-                        if completion {
-                            block.removeFromSuperview()
-                            self.blocks.removeValue(forKey: identifier as! String)
-                            self.updateScore(scoreToAdd: 10)
-                            if self.blocks.count == 0{
-                                self.gameOver(win: true)
-                            }
-                        } else {
+                    }, completion: { _ in
+                        block.removeFromSuperview()
+                        self.blocks.removeValue(forKey: identifier as! String)
+                        self.updateScore(scoreToAdd: 10)
+                        if self.blocks.count == 0{
+                            self.gameOver(win: true)
                         }
+                        block.layer.removeAllAnimations()
                     })
 
                 }

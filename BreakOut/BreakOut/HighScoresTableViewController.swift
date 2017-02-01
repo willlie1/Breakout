@@ -18,6 +18,7 @@ class HighScoresTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         highScores = SettingsHelper.getHighScore()
+        self.tableView.reloadData()
 
     }
 
